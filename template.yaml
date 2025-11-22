@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: us-east-1 | VPC + 2 públicas + 2 privadas + IGW + RTs + SG + EC2 (Ubuntu 22.04)
+Description: us-east-1 | VPC + 2 públicas + 2 privadas + IGW + RTs + SG + EC2 (Ubuntu 22.04) Menu
 
 Parameters:
   VPCCidr:
@@ -21,7 +21,7 @@ Parameters:
   AmiId:
     Type: AWS::EC2::Image::Id
     # Ubuntu 22.04 (us-east-1) - ajuste se necessário
-    Default: ami-0c5ddb3560e768732
+    Default: ami-0c398cb65a93047f2
 
   InstanceType:
     Type: String
@@ -183,10 +183,6 @@ Resources:
           FromPort: 443
           ToPort: 443
           CidrIp: !Ref IngressCidr
-        - IpProtocol: tcp
-          FromPort: 3000
-          ToPort: 3000
-          CidrIp: !Ref IngressCidr
       Tags:
         - Key: Name
           Value: sg-ec2
@@ -225,7 +221,7 @@ Resources:
       Domain: vpc
       Tags:
         - Key: Name
-          Value: InstanceLinuxUbuntu22-EIP
+          Value: eip-menu
 
   Ec2EipAssociation:
     Type: AWS::EC2::EIPAssociation
