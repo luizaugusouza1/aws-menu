@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: us-east-1 | VPC + 2 públicas + 2 privadas + IGW + RTs + SG + EC2 (Ubuntu 22.04) + RDS MySQL (sandbox)
+Description: us-east-1 | VPC + 2 públicas + 2 privadas + IGW + RTs + SG + EC2 (Ubuntu 22.04) + RDS MySQL (sandbox - acesso direto da sua máquina)
 
 Parameters:
   VPCCidr:
@@ -183,7 +183,7 @@ Resources:
         - IpProtocol: tcp
           FromPort: 22
           ToPort: 22
-          CidrIp: 189.18.217.85/32
+          CidrIp: 189.18.217.85/32   # Seu IP para SSH
         - IpProtocol: tcp
           FromPort: 80
           ToPort: 80
@@ -215,17 +215,17 @@ Resources:
         - Key: Name
           Value: sg-rds-mysql
 
-  # ----------------- DB Subnet Group (2 subredes privadas) -----------------
+  # ----------------- DB Subnet Group (2 subredes PÚBLICAS para acesso direto) -----------------
   DBSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
     Properties:
-      DBSubnetGroupDescription: Subnet group para RDS MySQL em 2 AZs privadas
+      DBSubnetGroupDescription: Subnet group para RDS MySQL em 2 AZs públicas (sandbox)
       SubnetIds:
-        - !Ref PrivateSubnet1
-        - !Ref PrivateSubnet2
+        - !Ref PublicSubnet1
+        - !Ref PublicSubnet2
       Tags:
         - Key: Name
-          Value: db-subnetgroup-private
+          Value: db-subnetgroup-public
 
   # ----------------- EIP -----------------
   Ec2Eip:
@@ -290,9 +290,9 @@ Resources:
           systemctl enable apache2
           systemctl restart apache2
 
-          # Nenhuma página criada aqui - você deploya o site manualmente
+          # Nenhuma página criada aqui - você faz o deploy do site manualmente
 
-  # ----------------- RDS MySQL (sandbox) -----------------
+  # ----------------- RDS MySQL (sandbox - PUBLICLY ACCESSIBLE) -----------------
   MySqlRdsInstance:
     Type: AWS::RDS::DBInstance
     Properties:
@@ -306,9 +306,9 @@ Resources:
       DBName: rds_menu                        # nome do banco interno (sem hífen)
       VPCSecurityGroups:
         - !Ref DBSecurityGroup
-      DBSubnetGroupName: !Ref DBSubnetGroup
+      DBSubnetGroupName: !Ref DBSubnetGroup   # usa subnets públicas
       MultiAZ: false
-      PubliclyAccessible: false
+      PubliclyAccessible: true                # importante para acesso direto
       DeletionProtection: false
       BackupRetentionPeriod: 1
       DeleteAutomatedBackups: true
@@ -318,42 +318,59 @@ Outputs:
   VpcId:
     Description: ID da VPC
     Value: !Ref VPC
+
   PublicSubnet1Id:
     Description: Subnet pública 1
     Value: !Ref PublicSubnet1
+
   PublicSubnet2Id:
     Description: Subnet pública 2
     Value: !Ref PublicSubnet2
+
   PrivateSubnet1Id:
     Description: Subnet privada 1
     Value: !Ref PrivateSubnet1
+
   PrivateSubnet2Id:
     Description: Subnet privada 2
     Value: !Ref PrivateSubnet2
+
   PublicRtId:
     Description: Route table pública
     Value: !Ref PublicRouteTable
+
   PrivateRtId:
     Description: Route table privada
     Value: !Ref PrivateRouteTable
+
   SecurityGroupId:
     Description: SG da instância EC2
     Value: !Ref AppSecurityGroup
+
   DBSecurityGroupId:
     Description: SG do RDS
     Value: !Ref DBSecurityGroup
+
   DBEndpointAddress:
     Description: Endpoint do RDS MySQL
     Value: !GetAtt MySqlRdsInstance.Endpoint.Address
+
   DBEndpointPort:
     Description: Porta do RDS MySQL
     Value: !GetAtt MySqlRdsInstance.Endpoint.Port
+
   InstanceId:
     Description: ID da EC2
     Value: !Ref Ec2Instance
+
   InstancePublicDns:
     Description: DNS público da EC2
     Value: !GetAtt Ec2Instance.PublicDnsName
+
   InstancePublicIp:
     Description: IP público (EIP) da EC2
     Value: !Ref Ec2Eip
+
+  DBConnectionStringExample:
+    Description: Exemplo de string de conexão MySQL
+    Value: !Sub "mysql -h ${MySqlRdsInstance.Endpoint.Address} -P ${MySqlRdsInstance.Endpoint.Port} -u admin -p rds_menu"
