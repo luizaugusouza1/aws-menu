@@ -153,7 +153,8 @@ Durante a reunião, apresentei:
 - ALB  
 - Security Groups  
 - IAM  
-- CloudFormation  
+- CloudFormation
+- Certificate Manager
 
 ### 🟧 Infraestrutura e Desenvolvimento
 - YAML (IaC)  
@@ -164,7 +165,6 @@ Durante a reunião, apresentei:
 
 ### 🟩 Aplicação SaaS
 - PHP / HTML / CSS / JavaScript  
-- API WhatsApp  
 - Sistema multi-restaurante  
 
 ---
@@ -192,16 +192,36 @@ Durante a reunião, apresentei:
 ---
 
 ## 📎 9. Prints e Evidências  
-*(Inserir imagens aqui)*
+<table>
+  <tr>
+    <td><img src="./images/images%20(1).png" width="300px"/></td>
+    <td><img src="./images/images%20(2).png" width="300px"/></td>
+    <td><img src="./images/images%20(3).png" width="300px"/></td>
+  </tr>
+  <tr>
+    <td><img src="./images/images%20(4).png" width="300px"/></td>
+    <td><img src="./images/images%20(5).png" width="300px"/></td>
+    <td><img src="./images/images%20(6).png" width="300px"/></td>
+  </tr>
+  <tr>
+    <td><img src="./images/images%20(7).png" width="300px"/></td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
 
-- Stack CloudFormation finalizada  
-- VPC criada  
-- Sub-redes  
-- EC2  
-- RDS  
-- ALB  
-- Interface do sistema SaaS  
-- Pedido concluído via WhatsApp  
+---
+
+## 📺 10. Vídeo da Implantação 
+
+Clique para assistir o deploy completo do projeto na AWS �
+
+[▶ Assista no YouTube](https://youtu.be/hyDsMO7DlLc)
+<table>
+  <tr>
+    <td><img src="./images/images%20(0).png" width="300px"/></td>
+  </tr>
+</table>
 
 ---
 
